@@ -1,17 +1,22 @@
 <h1>hello from room.html</h1>
 
+  
 
-<div class="stage">
+
+<div class="stage" ng-switch on="currentPlayer">
     
     
-    <div class="soundcloud">
+    <div class="soundcloud" ng-switch-when="soundcloudplayer">
+        <h1>soundcloud player</h1>
         <player>
-
+            <buttton ng-click="addSound()">Play Dawg</button>
             <h1><span class="newWord"></span></h1>
-    
         </player>
     </div>
-    <div class="youtube">
+    
+    <div class="youtube" ng-switch-when="youtubeplayer">
+        <h1>youtube player</h1>
+        <youtube-video player="mainPlayer" player-vars="playerVar" video-id="playingVideo.$value"></youtube-video>
         
     </div>
     
@@ -33,17 +38,35 @@
     
 </form>
 
-The value selected is {{ correctlySelected.value }}.
+The value selected is {{ correctlySelected.label }}.
 
+<div class="searchResults" ng-switch on="correctlySelected.label">
+    <div ng-switch-default>
+        <h3>searching nothing</h3>
+    </div>
+    
+    <div class="soundCloudSearch" ng-switch-when="SoundCloud">
+        <h3>sound cloud results</h3>
+        <ul>
+            <li ng-repeat="song in searchArray track by $index">
+                <img ng-src="{{song.artwork_url}}"></img>
+                <span>{{song.title}}</span>
+                <button ng-click="addSCSong(song)">add song</button>
+            </li>
+        </ul>
+        
+    </div>
+    <div class="youtubeSearch" ng-switch-when="YouTube">
+        <h2>youtube results</h2>
+        <ul>
+            <li ng-repeat="song in searchArray track by $index">
+            
+                <img ng-src="{{song.snippet.thumbnails.default.url}}"></img>
+                <span>{{song.snippet.title}}</span>
+                <button ng-click="addYTSong(song)">add song</button>
 
-div.
-<div class="youtubeSearch">
-    <ul>
-        <li ng-repeat="song in searchArray track by $index">
             
-            <img src="{{song.snippet.thumbnails.default.url}}"></img>
-            <span>{{song.snippet.title}}</span>
-            
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </div>
 </div>

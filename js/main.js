@@ -21,10 +21,16 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
                 controller: "loginController",
                 templateUrl: "views/login.html"
             })
+
             .otherwise({
                 redirectTo: "/"
             });
     })
+    
+
+  
+ 
+    
 .controller("loginController", function($scope, $firebase){
     
     $scope.registerUser = function(){   
@@ -59,12 +65,30 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     console.log("home Controller");
 })
 
-.controller("roomController", function($scope, $firebase, $http){
-    console.log("room controller");
-   
+.controller("roomController", function($scope, $firebase, $http, porterServ){
+    //Dev room/user data
+    
+    //default user account for dev purposes.
+    var userAccount = "dev"
+    
+    var userData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
+    
+    var sync = $firebase(userData);
+    
+    var record = sync.$asObject();
+    
+    record.$bindTo($scope, 'userData');
+    
+    sync.$update({
+        email: "random",
+        username: "random",
+        currentPlaylist: "default"
+        
+    })
+
    $scope.options = [
     { label: 'YouTube', value: 1 },
-    { label: 'Sound Cloud', value: 2 }
+    { label: 'SoundCloud', value: 2 }
   ];
     
     //if the current client is the creator of the room.
@@ -73,8 +97,17 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     //device name, all devices must have a name before doing anything OR select an existing device.
     $scope.deviceName = false;
     
-    //the search results from the different api's.
-    $scope.searchArray = [];
+    //current player tells the DOM what player should be showing.
+    $scope.currentPlayer = "youtubeplayer";
+    
+    //the search results from the different api's. this is mainly for soundcloud
+    $scope.searchArray = porterServ.getSearchResults();
+    
+    //youtube search results:
+    $scope.youtubeSearchArray = [];
+    
+    //soundcloud search array:
+    $scope.soundcloudSearchArray = [];
     
     //current selected playlist
     $scope.currentPlaylist = "default";
@@ -85,6 +118,11 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     //just a string to hold the current video.
     $scope.currentSong = "";
     
+    //player auto plays
+    $scope.playerVar = {
+            autoplay: 1 //auto play video = true;
+    };
+    
     
     
     //this is what the user is currently searching, option 1 is default.
@@ -92,6 +130,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     //right now this only for youtube search.
     $scope.searchingVideo = function (q) {
+        console.log("SEARCHING VIDEO");
         // console.log($scope.correctlySelected.label);
         
         if($scope.correctlySelected.label === "YouTube"){
@@ -102,8 +141,9 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
                 "&maxResults=50"+
                 "&key=AIzaSyAvy2vZGTkZ5b8yyZ0o7VWEfWaLM6HCxts")
                 .success(function(data){
-                    $scope.searchArray = data.items;
-                    console.log("RESULTS array" ,$scope.searchArray);
+                    $scope.youtubeSearchArray = data.items;
+                    porterServ.pushResults(data.items);
+                    $scope.searchArray = porterServ.getSearchResults();
 
 
                 })
@@ -113,32 +153,48 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
                 
         }
         
-        else if($scope.correctlySelected.label === "Sound Cloud"){
+        else if($scope.correctlySelected.label === "SoundCloud"){
             console.log("soundcloud search");
             
-             $http.get("https://api.soundcloud.com/tracks.json?client_id=32393a2885421a0854a43640691c3eba&q="+q+"&limit=50")
+             $http.get("https://api.soundcloud.com/tracks.json?client_id=32393a2885421a0854a43640691c3eba&q="+q+"&limit=10")
                 .success(function(data){
                     
                     // $scope.searchArray = data.items;
-                    console.log("RESULTS array" ,data);
-
-
+                    $scope.soundcloudSearchArray = data; //preseting the data, this will be removed later and replaced by the service.
+                    porterServ.pushResults(data);
+                    $scope.searchArray = porterServ.getSearchResults();
+                })
+                .error(function(data){
+                    console.log("YT ERROR:", data);
+                });
+            
+        }else if($scope.correctlySelected.label === "spotify"){
+            console.log("soundcloud search");
+            
+             $http.get("https://api.soundcloud.com/tracks.json?client_id=32393a2885421a0854a43640691c3eba&q="+q+"&limit=10")
+                .success(function(data){
+                    
+                    // $scope.searchArray = data.items;
+                    $scope.soundcloudSearchArray = data; //preseting the data, this will be removed later and replaced by the service.
+                    porterServ.pushResults(data);
+                    $scope.searchArray = porterServ.getSearchResults();
                 })
                 .error(function(data){
                     console.log("YT ERROR:", data);
                 });
             
         }
-            
-        
-        
-        
-        
         console.log("searching video", q);
-        
-       
             
     };
+    
+    $scope.addYTSong = function (song) {
+        console.log("yt song", song);
+    }
+    
+    $scope.addSCSong = function (song) {
+        console.log("YT song", song);
+    }
     
     
     
@@ -153,13 +209,16 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
 
 })
 
-.controller("registerController", function($scope, $firebase){
+.controller("registerController", function($scope, $firebase, porterServ){
     
     //Calling the awesomse Firebase! Hello Firebase, come in!
     var ref = new Firebase("https://porter.firebaseio.com/");
-
+    //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
+        
         window.location.hash = "#/";
+        
+        
             }else{
             
             $scope.registerUser = function(){   
@@ -194,26 +253,30 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
  
   /* End Register Controller */
 
-.controller('form',function($scope){
-    
-    
-
-})
-
 .directive('player', function(){
-   return{
-       scope:{},
-       restrict:'E',
-       controller: function($scope){
+  return{
+      scope:true,
+      restrict:'E',
+      controller: function($scope){
          
-    
-       },
-       link:function(scope, element, attrs){
+         
+        $scope.addSound = function(index){
+            console.log("HELLO CONTROLLER DIRECTIVE");
+        SC.initialize({
+          client_id: '4b634ae74afe3d56fbc6232340602934'
+        });
+        // stream track id 293
+        SC.stream("https://api.soundcloud.com/tracks/138777816/stream", function(sound){
+          sound.play();
+        });
+        }
+      },
+      link:function(scope, element, attrs){
            
     
-    var wordArray = ["Music",'Live','Youtube','SoundCloud','HELLO?'];
+    var wordArray = ["One line",'2 line','3 line','4 line','5 line'];
            
-           var i = 0, l = wordArray.length;
+          var i = 0, l = wordArray.length;
             (function iterator() {
                 scope.word = wordArray[i];  
                  $(".newWord").html( wordArray[i]);
@@ -223,8 +286,13 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
             })();
 
            
-       } // function closing tag
-   }; // return closing tag
+      } // function closing tag
+  }; // return closing tag
    
     
 }); //cta closing tags
+
+
+
+
+   

@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
+    <title>Music Porter</title>
     <link rel="stylesheet" href="css/foundation.css" />
     <script src="js/vendor/modernizr.js"></script>
-    
+    <script src="soundmanager2.js"></script>
     <script src="https://connect.soundcloud.com/sdk.js"></script>
-  </head>
+  </head> 
   <body ng-app="porter">
     <div class="sticky">
     <nav class="top-bar" data-topbar="" role="navigation" data-options="sticky_on: large">
@@ -54,13 +54,23 @@
     {{4+4}}
     <a href="#/room">ROOM</a>
     <a href="#/register">Register</a>
-    
+
     
     <div ng-view>
       
       
     </div>
     
+    <script>
+SC.initialize({
+  client_id: '2791e388fafb782b85ce1504536b2a30'
+});
+
+var track_url = 'https://soundcloud.com/forss/flickermood';
+SC.oEmbed(track_url, { auto_play: true }, function(oEmbed) {
+  console.log('oEmbed response: ' + oEmbed);
+});
+</script>
     
     <script src="js/vendor/jquery.js"></script>
     <script src="js/foundation.min.js"></script>
@@ -78,7 +88,8 @@
     <script src="https://cdn.firebase.com/libs/angularfire/0.9.2/angularfire.min.js"></script>
     
     <script src="bower_components/angular-youtube-mb/dist/angular-youtube-embed.min.js"></script>
-    <script type="text/javascript" src="js/service.js"></script>
     <script src="js/main.js"></script>
+        <script type="text/javascript" src="js/service.js"></script>
+
   </body>
 </html>
