@@ -1,6 +1,49 @@
 <h1>hello from room.html</h1>
 
+
+<div class="stage">
+    
+    
+    <div class="soundcloud">
+        <player>
+
+            <h1><span class="newWord"></span></h1>
+    
+        </player>
+    </div>
+    <div class="youtube">
+        
+    </div>
+    
+  
+    
+    
+</div>
+
+
+
+
 <form ng-submit="searchingVideo(searchQuery)">
     <input type="text" name="query" ng-model="searchQuery"/>
     <input type="submit" value="Submit"/>
+        
+        <select ng-model="correctlySelected"
+                ng-options="opt as opt.label for opt in options">
+        </select>
+    
 </form>
+
+The value selected is {{ correctlySelected.value }}.
+
+
+div.
+<div class="youtubeSearch">
+    <ul>
+        <li ng-repeat="song in searchArray track by $index">
+            
+            <img src="{{song.snippet.thumbnails.default.url}}"></img>
+            <span>{{song.snippet.title}}</span>
+            
+        </li>
+    </ul>
+</div>
