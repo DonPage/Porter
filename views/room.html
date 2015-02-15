@@ -1,5 +1,10 @@
-<h1>hello from room.html</h1>
 
+<div class="devices">
+    <h1>switch devices to play on: </h1>
+    <div class="selectionDevices">
+        <button ng-repeat="device in devices" class="devbtn">{{device.name}}</button>
+    </div>
+</div>
   
 <div class="currentplaylist">
     <h4>currentplaylist: {{room.currentPlayer}}</h4>
@@ -58,7 +63,7 @@ The value selected is {{ correctlySelected.label }}.
             <li ng-repeat="song in searchArray track by $index">
                 <img ng-src="{{song.artwork_url}}"></img>
                 <a href="" ng-click="playSoundcloud(song.stream_url)">{{song.title}}</a>
-                <button id="addSCs" ng-click="addSCSong(song)">add song</button>
+                <button id="addSCs" ng-click="addSCSong(song)" onclick="this.disabled=true;">Add song</button>
             </li>
         </ul>
         
@@ -70,7 +75,7 @@ The value selected is {{ correctlySelected.label }}.
             
                 <img ng-src="{{song.snippet.thumbnails.default.url}}"></img>
                 <a href="" ng-click="playYoutube(song.id.videoId)">{{song.snippet.title}}</a>
-                <button id="addTYs" ng-click="addYTSong(song)">add song</button>
+                <button id="addTYs" ng-click="addYTSong(song)" onclick="this.disabled=true;">Add song</button>
 
             
             </li>

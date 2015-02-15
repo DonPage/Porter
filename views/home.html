@@ -6,7 +6,7 @@
             </div>
             <div id="ctrlID" ng-controller="homeController" ng-hide="">
                 <form ng-submit="registerUser()">
-                    <button id="glgin" type="submit">Login with Google!</button>
+                    <button id="glgin" type="submit" ng-hide="isRowHidden">Login with Google!</button>
                 </form>
             </div>
         </div>

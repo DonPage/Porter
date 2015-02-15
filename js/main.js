@@ -40,7 +40,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     
     $scope.logOut = function(){
         ref.unauth();
-        window.location.hash = '#/';
+        window.location.hash = '/#';
     }
 
     //Calling the awesomse Firebase! Hello Firebase, come in!
@@ -48,7 +48,9 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
         
-        window.location.hash = '#/';
+        window.location.hash = '/#';
+        $("#glgin").hide();
+
             
         
     }else{
@@ -66,8 +68,9 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                       name: authData.google.displayName,
                       email: authData.google.email
                   });
-                 var redirect = '#/';
+                 var redirect = '/#';
                  window.location.hash = redirect;
+                $("#glgin").hide();
                 }
                 ,{ 
                   scope: "email",
@@ -90,11 +93,12 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     if(localStorage.getItem('firebase:session::porter')){
         
         window.location.hash = '#/';
+
             
         
     }else{
             
-            $scope.registerUser = function(){   
+            $scope.loginUser = function(){   
     
             //Ref Firebase var to call in facebook api
             ref.authWithOAuthPopup("google", function(error, authData){
@@ -171,13 +175,30 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     
     var userData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
     
+    // var userDevice = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/devices/");
+    
     var sync = $firebase(userData);
+    
+    var syncDev = $firebase(userData.child("devices"));
+    
+    var recordDev = syncDev.$asObject();
     
     var record = sync.$asObject();
     
     record.$bindTo($scope, 'room');
     
-    $scope
+    recordDev.$bindTo($scope, 'devices')
+    
+    var dev2 = $scope.deviceID;
+    console.log("dev2", recordDev);
+    
+    syncDev.$update(dev2, {
+        name: dev2
+    });
+    
+    
+    
+    
     
     
     
@@ -394,7 +415,6 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             'player' : 'youtube'
         });
         
-
         //console.log(song);
     }
     
@@ -408,7 +428,6 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             'image_medium' : song.artwork_url,
             'player' : 'soundcloud'
         }); 
-
         //console.log(song);        
     }
     
@@ -420,6 +439,12 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
          
         
     };
+    
+    /*
+    $scope.removeItem = function(itemIndex){
+        items.splice(itemIndex,1);
+    }
+    */
     
     $scope.playSoundcloud = function(link) {
         $scope.room.currentPlayer = "soundcloud";
