@@ -33,41 +33,52 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
 
   
- 
-    
-.controller("loginController", function($scope, $firebase){
-    
-    $scope.registerUser = function(){   
 
-        //Ref Firebase var to call in facebook api
-        ref.authWithOAuthPopup("google", function(error, authData){
-              
-                var userRef = ref.child("/users/");
-                $scope.id = authData.google.id;
-                
-                userRef.child($scope.id).update({
-                  //Information grabbing from Google
-                  name: authData.google.displayName,
-                  email: authData.google.email
-              });
-             var redirect = '#/';
-             window.location.hash = redirect;
-            }
-            ,{ 
-              scope: "email",
-              remember: "default"
-            } 
-        );
+.controller("homeController", function($scope, $firebase, porterServ){
+    
+    
+
+    //Calling the awesomse Firebase! Hello Firebase, come in!
+    var ref = new Firebase("https://porter.firebaseio.com/");
+    //console.log(porterServ.getItems());
+    if(localStorage.getItem('firebase:session::porter')){
+        
+        window.location.hash = "#/";
+            
+        
+    }else{
+            
+            $scope.registerUser = function(){   
+    
+            //Ref Firebase var to call in facebook api
+            ref.authWithOAuthPopup("google", function(error, authData){
+                  
+                    var userRef = ref.child("/users/");
+                    $scope.id = authData.google.id;
+                    
+                    userRef.child($scope.id).update({
+                      //Information grabbing from Google
+                      name: authData.google.displayName,
+                      email: authData.google.email
+                  });
+                 var redirect = '#/';
+                 window.location.hash = redirect;
+                }
+                ,{ 
+                  scope: "email",
+                  remember: "default"
+                } 
+            );
 
          }; //Google Auth Closing Tag 
          
-        //Register COntroller bracket
-    
-})
-    
-.controller("homeController", function($scope, $firebase){
-    console.log("home Controller");
-})
+        }
+        
+       } //Register COntroller bracket
+       
+    ) // close controller "register controller"
+ 
+  /* End Register Controller */
 
 .controller("profileController", function($scope, $firebase){
     console.log(localStorage.getItem("uid"));
@@ -319,7 +330,13 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     $scope.playYoutube = function (link) {
         console.log("PLAY YOUTUBE!", link);
         $scope.room.currentlyPlaying = link;
+        $scope.room.currentPlayer = "youtube";
         
+    };
+    
+    $scope.playSoundcloud = function(link) {
+        $scope.room.currentPlayer = "soundcloud";
+        console.log("PLAY SC:", link);
     };
 
 })
@@ -330,49 +347,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
 
 })
 
-.controller("registerController", function($scope, $firebase, porterServ){
-    
-    //Calling the awesomse Firebase! Hello Firebase, come in!
-    var ref = new Firebase("https://porter.firebaseio.com/");
-    //console.log(porterServ.getItems());
-    if(localStorage.getItem('firebase:session::porter')){
-        
-        window.location.hash = "#/";
-        
-        
-            }else{
-            
-            $scope.registerUser = function(){   
-    
-            //Ref Firebase var to call in facebook api
-            ref.authWithOAuthPopup("google", function(error, authData){
-                  
-                    var userRef = ref.child("/users/");
-                    $scope.id = authData.google.id;
-                    
-                    userRef.child($scope.id).update({
-                      //Information grabbing from Google
-                      name: authData.google.displayName,
-                      email: authData.google.email
-                  });
-                 var redirect = '#/';
-                 window.location.hash = redirect;
-                }
-                ,{ 
-                  scope: "email",
-                  remember: "default"
-                } 
-            );
 
-         }; //Google Auth Closing Tag 
-         
-        }
-        
-       } //Register COntroller bracket
-       
-    ) // close controller "register controller"
- 
-  /* End Register Controller */
 
 .directive('player', function(){
   return{
