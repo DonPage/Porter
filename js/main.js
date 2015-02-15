@@ -175,13 +175,26 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         //holds the next index value.
             var nextIdx = $scope.room.currentIndex;
             
-            var playlistData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/allPlaylist/" + $scope.room.currentPlaylist + "/");
+            var playlistData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/allPlaylist/default/");
     
             var syncPlaylist = $firebase(playlistData);
     
-            var recordPlaylist = sync.$asArray();
+            var recordPlaylist = syncPlaylist.$asObject();
             
-            console.log("FOREVER: ",recordPlaylist[1], nextIdx, recordPlaylist);
+            var playlistShadow = [];
+            
+            recordPlaylist.$loaded().then(function (data) {
+                console.log("data:", data);
+                
+            })
+            
+            for (var keys in recordPlaylist) {
+                    if (recordPlaylist.hasOwnProperty(keys)) {
+                        console.log(keys);
+                    }
+            }
+            
+            console.log("FOREVER: ", recordPlaylist);
             
             
 
@@ -264,11 +277,11 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         console.log("searching video", q);
             
     };
-    
+    /* Section that adds the videos to the users playlist */
     $scope.addYTSong = function(song) {
         
         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
-        
+        //Pushes informaiton to firebase
         userDB.push({
             'link' : 'https://www.youtube.com/watch?v=' + song['id']['videoId'],
             'name' : song['snippet']['title'],
@@ -278,25 +291,19 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         //console.log(song);
     }
     
-    $scope.addSCSong = function (song) {
+    $scope.addSCSong = function(song) {
 
         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
-        /*
+        //Pushes informaiton to firebase
         userDB.push({
-            'link' : 'https://www.youtube.com/watch?v=' + song['id']['videoId'],
-            'name' : song['snippet']['title'],
-            'image_medium' : song['snippet']['thumbnails']['medium']['url'],
+            'link' : song.stream_url,
+            'name' : song.title,
+            'image_medium' : song.artwork_url,
             'player' : 'soundcloud'
-        }); */
-        console.log(song);        
-
+        }); 
+        //console.log(song);        
     }
-    
-    
-    
-    
-    
-    
+
 })
 
 .controller('aboutController',function($scope){
