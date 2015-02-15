@@ -1,14 +1,12 @@
 
 <div class="devices">
-    <h1>switch devices to play on: </h1>
+    <h1>switch devices to play on: {{room.playingDevice}}</h1>
     <div class="selectionDevices">
-        <button ng-repeat="device in devices" class="devbtn">{{device.name}}</button>
+        <button ng-repeat="device in devices" class="devbtn" ng-click="selectingNewDev(device.name)">{{device.name}}</button>
     </div>
 </div>
   
 <div class="currentplaylist">
-    <h4>currentplaylist: {{room.currentPlayer}}</h4>
-    
     <ul>
         <li ng-repeat="song in room.allPlaylist.default">
             <a href="" ng-show="song.player == 'youtube'" ng-click="playYoutube(song.link)">{{song.name}} | {{song.player}}</a>
@@ -18,15 +16,25 @@
     
 </div>
 
-<div class="stage" ng-switch on="room.currentPlayer">
+<div class="stage" ng-switch on="checkPlayingDevice(room.playingDevice)">
+    <div ng-switch-default>
+        default
+    </div>
+    <div ng-switch-when="false">
+        playing on another device.
+    </div>
+    
+    <div class="player-wrapper--outer" ng-switch-when="true">
+        playing on this deivce.
+         <div class="player-wrapper--inner" ng-switch on="room.currentPlayer">
     
     
-    <div class="soundcloud" ng-switch-when="soundcloud">
-        <h1>soundcloud player</h1>
-        <!--<player>-->
-        <!--    <buttton ng-click="addSound()">Play Dawg</button>-->
-            <!--<h1><span class="newWord"></span></h1>-->
-        <!--</player>-->
+        <div class="soundcloud" ng-switch-when="soundcloud">
+            <h1>soundcloud player</h1>
+            <!--<player>-->
+            <!--    <buttton ng-click="addSound()">Play Dawg</button>-->
+                <!--<h1><span class="newWord"></span></h1>-->
+            <!--</player>-->
         <div plangular="http://soundcloud.com/jxnblk/plangular"></div>
     </div>
     
@@ -35,6 +43,11 @@
         <youtube-video player="mainPlayer" player-vars="playerVar" video-url="room.currentlyPlaying"></youtube-video>
     </div>
     
+    </div>
+    <!--INNER-->
+    </div>
+    <!--OUTER-->
+   
 </div>
 
 

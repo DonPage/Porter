@@ -27,7 +27,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             })
 
             .otherwise({
-                redirectTo: "#/"
+                redirectTo: "/"
             });
     })
     
@@ -38,22 +38,23 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     
     var ref = new Firebase("https://porter.firebaseio.com/");
     
+
     $scope.logOut = function(){
         ref.unauth();
-        window.location.hash = '/#';
+        $("#nvlgout").hide();
+        window.location.hash = '/';
     }
 
     //Calling the awesomse Firebase! Hello Firebase, come in!
     var ref = new Firebase("https://porter.firebaseio.com/");
     //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
-        
-        window.location.hash = '/#';
         $("#glgin").hide();
-
-            
-        
+        $("#nvlgin").hide();
     }else{
+        $("#nvlgout").hide();
+        //else if($scope.logOut === true){
+        //$("#nvlgout").hide();
             
             $scope.registerUser = function(){   
     
@@ -68,7 +69,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                       name: authData.google.displayName,
                       email: authData.google.email
                   });
-                 var redirect = '/#';
+                 var redirect = '/';
                  window.location.hash = redirect;
                 $("#glgin").hide();
                 }
@@ -92,10 +93,9 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
         
-        window.location.hash = '#/';
+        window.location.hash = '/';
 
             
-        
     }else{
             
             $scope.loginUser = function(){   
@@ -109,9 +109,16 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                     userRef.child($scope.id).update({
                       //Information grabbing from Google
                       name: authData.google.displayName,
-                      email: authData.google.email
+                      email: authData.google.email,
+                      //default preSets
+                      allPlaylist: {
+                          default: " "
+                      },
+                      currentPlayer: "youtube",
+                      currentlyPlaying: " ",
+                      devices: " "
                   });
-                 var redirect = '#/';
+                 var redirect = '/';
                  window.location.hash = redirect;
                 }
                 ,{ 
@@ -129,8 +136,6 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
 
 .controller("roomController", function($scope, $firebase, $http, porterServ){
     //Dev room/user data
-    
-    
     
     //on init this will get user data, if any:
     function loadLSData() {
@@ -187,16 +192,31 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     
     record.$bindTo($scope, 'room');
     
-    recordDev.$bindTo($scope, 'devices')
+    recordDev.$bindTo($scope, 'devices');
     
     var dev2 = $scope.deviceID;
-    console.log("dev2", recordDev);
-    
+
     syncDev.$update(dev2, {
         name: dev2
     });
     
+    //this is just a function that helps the ng-switch actually see if the devID matches playingDevice.
+    $scope.checkPlayingDevice = function(pd) {
+        if(pd == dev2){//does match
+            console.log("pd matches dev2");
+            return true;
+        } else {//doesn;t match
+            console.log("pd DOESNT MATCH dev2");
+            return false;
+        }
+        
+    };
     
+    //this functions updates the server with the new device.
+    $scope.selectingNewDev = function(name) {
+        console.log(name);
+        $scope.room.playingDevice = name;
+    };
     
     
     
@@ -280,7 +300,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     };
     
     
-    
+    //TODO: what this does( or should do) is once the youtube video ends, it plays the next song in the index.
      $scope.$on('youtube.player.ended', function ($event, player) { //action once video ends.
      
         console.log("video has ended");
@@ -406,7 +426,8 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     /* Section that adds the videos to the users playlist */
     $scope.addYTSong = function(song) {
         
-        var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
+        var userDB = new Firebase("https://porter.firebaseio.com/users/"+userAccount+"/allPlaylist/default");
+
         //Pushes informaiton to firebase
         userDB.push({
             'link' : 'https://www.youtube.com/watch?v=' + song['id']['videoId'],
@@ -420,7 +441,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     
     $scope.addSCSong = function(song) {
 
-        var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
+        var userDB = new Firebase("https://porter.firebaseio.com/users/"+userAccount+"/allPlaylist/default");
         //Pushes informaiton to firebase
         userDB.push({
             'link' : song.stream_url,
