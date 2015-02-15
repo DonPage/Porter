@@ -181,20 +181,31 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
             var recordPlaylist = syncPlaylist.$asObject();
             
+            var arrayPlaylistSync = syncPlaylist.$asArray();
+            
             var playlistShadow = [];
             
             recordPlaylist.$loaded().then(function (data) {
-                console.log("data:", data);
-                
-            })
-            
-            for (var keys in recordPlaylist) {
-                    if (recordPlaylist.hasOwnProperty(keys)) {
-                        console.log(keys);
+                console.log("data:", data['-JiADdHjIW-jUbpO3Fu_']);
+                for (var keys in data) {
+                    if (data.hasOwnProperty(keys)) {
+                        
+                        console.log(data[keys]);
+                        
+                        
+                        var usersRef = new Firebase('https://porter.firebaseio.com/users/dev/allPlaylist/default/');
+                        var fredRef = usersRef.child('4');
+                        console.log(fredRef);
+
+                        
                     }
             }
+            })
+            
+            
             
             console.log("FOREVER: ", recordPlaylist);
+            // console.log("ARRAY:", arrayPlaylistSync);
             
             
 

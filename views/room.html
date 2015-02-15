@@ -1,7 +1,18 @@
 <h1>hello from room.html | currentIndex: {{currentPlaylistRef.$value}} | {{room.currentlyPlaying}}</h1>
 
   
+<div class="currentplaylist">
+    <h4>currentplaylist</h4>
+    
+    <ul>
+        <li ng-repeat="song in room.allPlaylist.default">
+            <a href="" ng-show="song.player == 'youtube'">{{song.name}} | {{song.player}}</a>
+            <a href="" ng-show="song.player == 'soundcloud'">{{song.name}} | {{song.player}}</a>
 
+        </li>
+    </ul>
+    
+</div>
 
 <div class="stage" ng-switch on="currentPlayer">
     
