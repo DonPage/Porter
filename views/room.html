@@ -1,8 +1,21 @@
+<div class="main-search">
+    <form class="clearfix" ng-submit="searchingVideo(searchQuery)">
+        <select class="ss" ng-model="correctlySelected"
+                ng-options="opt as opt.label for opt in options">
+        </select>
+        <div class="group">      
+             <input ng-model="searchQuery" class="tsinput" type="text" required>
+             <label>{{correctlySelected.label}} search</label>
+             <span class="highlight"></span>
+            <span class="bar"></span>
+        </div>
 
+    </form>
+</div>
 <div class="devices">
-    <h1>switch devices to play on: {{room.playingDevice}}</h1>
+    <span>Your Device:</span><span class="sudle"> {{deviceID}}</span>
     <div class="selectionDevices">
-        <button ng-repeat="device in devices" class="devbtn" ng-click="selectingNewDev(device.name)">{{device.name}}</button>
+        <button ng-repeat="device in devices" class="devbtn" ng-click="selectingNewDev(device.name)">{{device.name}} <span ng-show="(device.name == room.playingDevice)">*host</span></button>
     </div>
 </div>
   
@@ -18,19 +31,19 @@
 
 <div class="stage" ng-switch on="checkPlayingDevice(room.playingDevice)">
     <div ng-switch-default>
-        default
+        <span>default</span>
     </div>
     <div ng-switch-when="false">
-        playing on another device.
+        <span class=sudle>laying on another device.</span>
     </div>
     
     <div class="player-wrapper--outer" ng-switch-when="true">
-        playing on this deivce.
+        <!--<span class="sudle">playing: </span>-->
          <div class="player-wrapper--inner" ng-switch on="room.currentPlayer">
     
     
         <div class="soundcloud" ng-switch-when="soundcloud">
-            <h1>soundcloud player</h1>
+            <!--<h1>soundcloud player</h1>-->
             <!--<player>-->
             <!--    <buttton ng-click="addSound()">Play Dawg</button>-->
                 <!--<h1><span class="newWord"></span></h1>-->
@@ -40,7 +53,7 @@
     
     <div class="youtube" ng-switch-when="youtube">
         <h1>youtube player</h1>
-        <youtube-video player="mainPlayer" player-vars="playerVar" video-url="room.currentlyPlaying"></youtube-video>
+        <youtube-video class="youtubeplayer" player="mainPlayer" player-vars="playerVar" video-url="room.currentlyPlaying" player-width="'100%'" player-height="'100%'"></youtube-video>
     </div>
     
     </div>
@@ -53,17 +66,17 @@
 
 
 
-<form ng-submit="searchingVideo(searchQuery)">
-    <input type="text" name="query" ng-model="searchQuery"/>
-    <input type="submit" value="Submit"/>
+<!--<form ng-submit="searchingVideo(searchQuery)">-->
+<!--    <input type="text" name="query" ng-model="searchQuery"/>-->
+<!--    <input type="submit" value="Submit"/>-->
         
-        <select ng-model="correctlySelected"
-                ng-options="opt as opt.label for opt in options">
-        </select>
+<!--        <select ng-model="correctlySelected"-->
+<!--                ng-options="opt as opt.label for opt in options">-->
+<!--        </select>-->
     
-</form>
+<!--</form>-->
 
-The value selected is {{ correctlySelected.label }}.
+<!--The value selected is {{ correctlySelected.label }}.-->
 
 <div class="searchResults" ng-switch on="correctlySelected.label">
     <div ng-switch-default>
@@ -74,19 +87,20 @@ The value selected is {{ correctlySelected.label }}.
         <h3>sound cloud results</h3>
         <ul>
             <li ng-repeat="song in searchArray track by $index">
-                <img ng-src="{{song.artwork_url}}"></img>
+                <img class="th" ng-src="{{song.artwork_url}}"></img>
                 <a href="" ng-click="playSoundcloud(song.stream_url)">{{song.title}}</a>
+                <a href="" ng-click="stopSoundcloud(song.stream_url)>Play/Stop</a>
+                <!--- <a href="" ng-click="stopSoundcloud(song.stream_url)">Play/Stop</a> --->
                 <button id="addSCs" ng-click="addSCSong(song)" onclick="this.disabled=true;">Add song</button>
             </li>
         </ul>
-        
     </div>
     <div class="youtubeSearch" ng-switch-when="YouTube">
         <h2>youtube results</h2>
         <ul>
             <li ng-repeat="song in searchArray track by $index">
             
-                <img ng-src="{{song.snippet.thumbnails.default.url}}"></img>
+                <img class="th" ng-src="{{song.snippet.thumbnails.default.url}}"></img>
                 <a href="" ng-click="playYoutube(song.id.videoId)">{{song.snippet.title}}</a>
                 <button id="addTYs" ng-click="addYTSong(song)" onclick="this.disabled=true;">Add song</button>
 

@@ -6,7 +6,7 @@ body{
 #cta-ann{
     overflow:hidden;
     width:100%;
-    height:500px;
+    height:800px;
     background-image:url(../img/cta_Background.jpg);
     background-size:cover;
     box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2); 
@@ -50,8 +50,9 @@ body{
 
 /* LABEL ======================================= */
 label          {
-  color:white; 
-  font-size:18px;
+  color: #008CBA;
+  letter-spacing: 4.1px;
+  font-size:1.0em;
   font-weight:normal;
   position:absolute;
   pointer-events:none;
@@ -64,17 +65,17 @@ label          {
 .tsinput:focus ~ label, .tsinput:valid ~ label     {
   /*top:-20px;*/
   font-size:14px;
-  color:white;
+  color: #008CBA;
 }
 
 .bar  { position:relative; display:block; width:300px; }
 .bar:before, .bar:after   {
   content:'';
-  height:2px; 
+  /*height:.5px; */
   width:0;
-  border-bottom:1px; 
+  border-bottom:1px solid #008CBA; 
   position:absolute;
-  background:white; 
+  background:black; 
   transition:0.2s ease all; 
 }
 .bar:before {
@@ -106,7 +107,7 @@ label          {
 
 /* ANIMATIONS ================ */
 @keyframes inputHighlighter {
-  from  { background:#5264AE; }
+  from  { background:#008CBA; }
   to    { width:0; background:transparent; }
 }
 
@@ -116,7 +117,7 @@ label          {
   top:-20px;
   border: 2px;
   font-size:14px;
-  color:white;
+  color: #008CBA;
 }
 
 .top-bar{

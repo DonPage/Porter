@@ -42,7 +42,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     $scope.logOut = function(){
         ref.unauth();
         $("#nvlgout").hide();
-        window.location.hash = '/';
+        window.location.href = 'https://porter-thefad3.c9.io';
     }
 
     //Calling the awesomse Firebase! Hello Firebase, come in!
@@ -69,8 +69,10 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                       name: authData.google.displayName,
                       email: authData.google.email
                   });
-                 var redirect = '/';
-                 window.location.hash = redirect;
+                //Using Direct .href locations to prevent user error and Angular load problems
+                //Do Not revert to hash. Will not work. 
+                 var redirect = 'https://porter-thefad3.c9.io';
+                 window.location.href = redirect;
                 $("#glgin").hide();
                 }
                 ,{ 
@@ -93,7 +95,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
         
-        window.location.hash = '/';
+        window.location.href  = 'https://porter-thefad3.c9.io';
 
             
     }else{
@@ -118,8 +120,11 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                       currentlyPlaying: " ",
                       devices: " "
                   });
-                 var redirect = '/';
-                 window.location.hash = redirect;
+                  
+                  //Using Direct .href locations to prevent user error and Angular load problems
+                  //Do Not revert to hash. Will not work. 
+                 var redirect = 'https://porter-thefad3.c9.io';
+                 window.location.href = redirect;
                 }
                 ,{ 
                   scope: "email",
@@ -148,6 +153,9 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
         
         if(!$scope.loginData){
             //this will handle guest accounts.
+                //Rediect for guest accounts if they do not hold the session login
+                window.location.href = 'https://porter-thefad3.c9.io';
+                
             console.log("NOT LOGGED IN!");
         } else {
             console.log("USER IS LOGGED IN.");
@@ -452,11 +460,23 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
         //console.log(song);        
     }
     
+    var is_playing = false,
+        sound;
     
     $scope.playYoutube = function (link) {
         $scope.room.currentPlayer = "youtube";
         console.log("PLAY YOUTUBE!", link);
         $scope.room.currentlyPlaying = link;
+         
+            if( sound ) {
+                if(is_playing) {
+                sound.pause();
+                is_playing = false;
+            } else {
+                 sound.play();
+                is_playing = true;
+            }
+         }
          
         
     };
@@ -479,10 +499,39 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             });
             SC.stream(link, function(sound){
                 sound.play();
+                //$scope.stopSoundcloud = function(sound){sound.pause();}
+               //var play function(sound){ sound.play(); }
+               //var pause function(sound){ sound.pause(); }
             });
+            
         };
         playSCSong(link);
-    };
+    }
+    
+
+    
+    
+      $scope.stopSoundcloud = function(link) {
+        
+            if( sound ) {
+                if(is_playing) {
+                sound.stop();
+                is_playing = false;
+            } else {
+                 sound.play();
+                is_playing = true;
+            }
+         } else {
+        SC.initialize({
+                client_id: '4b634ae74afe3d56fbc6232340602934'
+            });     
+        SC.stream(link, function(obj){
+            obj.play();
+            sound = obj;
+            is_playing = true;
+        });
+            }
+        }; 
 
 })
 
