@@ -126,11 +126,48 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
 .controller("roomController", function($scope, $firebase, $http, porterServ){
     //Dev room/user data
     
+    
+    
     //on init this will get user data, if any:
+    function loadLSData() {
+        $scope.stringLoginData = localStorage.getItem("firebase:session::porter");
+        
+        //parses data from ls, or just sets it to false if none given.
+        $scope.loginData = JSON.parse($scope.stringLoginData) || false;
+        
+        console.log($scope.loginData);
+        
+        if(!$scope.loginData){
+            //this will handle guest accounts.
+            console.log("NOT LOGGED IN!");
+        } else {
+            console.log("USER IS LOGGED IN.");
+            $scope.deviceID  = $scope.minDeviceID($scope.loginData.token);
+            $scope.userID = $scope.loginData.google.id;
+            
+            console.log("FINAL user info:"+$scope.deviceID, $scope.userID);
+            
+        };
+        
+    }//END OF LOADLSDATA();
     
+    //this mins the device ID so its more readable.
+    $scope.minDeviceID = function (id) {
+        //returns last 3 characters
+        var lastThree = id.substr(id.length - 3);
+        
+        //just standard template text.
+        var template = "Device"
+        
+        return template +"-"+lastThree;
+    };
     
-    //default user account for dev purposes.
-    var userAccount = "dev";
+    loadLSData();//might move this later.
+    
+    //if user is not logged in this switches to dev, this will be changed later once guest accounts are put in.
+    var userAccount = $scope.userID || "dev";
+    
+    console.log("userAccount:", userAccount);
     
     var userData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
     
@@ -139,6 +176,13 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     var record = sync.$asObject();
     
     record.$bindTo($scope, 'room');
+    
+    $scope
+    
+    
+    
+    
+    
     
     // console.log("currentPlaylist", $scope.room.currentPlaylist);
     
@@ -349,6 +393,8 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             'image_medium' : song['snippet']['thumbnails']['medium']['url'],
             'player' : 'youtube'
         });
+        
+
         //console.log(song);
     }
     
@@ -362,6 +408,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             'image_medium' : song.artwork_url,
             'player' : 'soundcloud'
         }); 
+
         //console.log(song);        
     }
     
