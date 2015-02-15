@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Porter</title>
     <link rel="stylesheet" href="css/foundation.css" />
+     <link rel="stylesheet" href="css/main.css" />
     <script src="js/vendor/modernizr.js"></script>
     <script src="soundmanager2.js"></script>
     <script src="https://connect.soundcloud.com/sdk.js"></script>
@@ -15,7 +16,7 @@
         <ul class="title-area">
             <!-- Title Area -->
             <li class="name">
-                <h1><a href="?ctrl=home&vivacity=home">Something Something Here</a></h1>
+                <h1><a href="?ctrl=home&vivacity=home">Music Porter</a></h1>
             </li>
             <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
             <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -42,8 +43,8 @@
             <!-- Right Nav Section -->
             <ul class="right">
                 <li><a href="#/room">Home</a></li>
-                <li><a href="#" data-reveal-id="myModal">Log In</a></li>
-                <li><a href="#/room">About Us</a></li>
+                <li><a href="#" data-reveal-id="myModal">Register</a></li>
+                <li><a href="#/profile">Profile</a></li>
             </ul>
         </section></nav>
 </div>
@@ -61,16 +62,16 @@
       
     </div>
     
-    <script>
-SC.initialize({
-  client_id: '2791e388fafb782b85ce1504536b2a30'
-});
+<div id="myModal" class="reveal-modal" data-reveal>
 
-var track_url = 'https://soundcloud.com/forss/flickermood';
-SC.oEmbed(track_url, { auto_play: true }, function(oEmbed) {
-  console.log('oEmbed response: ' + oEmbed);
-});
-</script>
+<div ng-controller="registerController">
+    <form ng-submit="registerUser()">
+        <button type="submit">Google Account</button>
+    </form>
+</div>
+
+
+</div>
     
     <script src="js/vendor/jquery.js"></script>
     <script src="js/foundation.min.js"></script>

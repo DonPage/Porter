@@ -21,6 +21,10 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
                 controller: "loginController",
                 templateUrl: "views/login.html"
             })
+            .when("/profile",{
+                controller: "profileController",
+                templateUrl: "views/profile.html"
+            })
 
             .otherwise({
                 redirectTo: "/"
@@ -65,11 +69,17 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     console.log("home Controller");
 })
 
+.controller("profileController", function($scope, $firebase){
+    console.log(localStorage.getItem("uid"));
+    
+    
+})
+
 .controller("roomController", function($scope, $firebase, $http, porterServ){
     //Dev room/user data
     
     //default user account for dev purposes.
-    var userAccount = "dev"
+    var userAccount = "dev";
     
     var userData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
     
@@ -77,14 +87,33 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     var record = sync.$asObject();
     
-    record.$bindTo($scope, 'userData');
+    record.$bindTo($scope, 'room');
     
     sync.$update({
         email: "random",
         username: "random",
-        currentPlaylist: "default"
-        
+        currentPlaylist: "default",
+        currentIndex: 0,
+        currentlyPlaying: "HAIDqt2aUek",
+        allPlaylist: {
+            default: {
+                link: "https://www.youtube.com/watch?v=HAIDqt2aUek",
+                link: "https://www.youtube.com/watch?v=HAIDqt2aUek"
+            }
+        }
     })
+    //currentIndex holds the value of index in firebase arrray.
+    $scope.currentPlaylistRef = $firebase(userData.child("currentIndex")).$asObject();
+    $scope.currentPlaylistRef.$loaded().then(function(data){
+            console.log("$scope.currentIndex:", data.$value);
+            $scope.currentIndex = data.$value;
+            
+            //small orange chicking, large chicking lowmein. small chicking
+            
+        });
+    
+    console.log($scope.currentIdx);
+
 
    $scope.options = [
     { label: 'YouTube', value: 1 },
@@ -122,6 +151,32 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     $scope.playerVar = {
             autoplay: 1 //auto play video = true;
     };
+    
+    
+    
+     $scope.$on('youtube.player.ended', function ($event, player) { //action once video ends.
+     
+        console.log("video has ended");
+        
+        //adds one to the current index.
+        $scope.room.currentIndex ++;
+        //holds the next index value.
+            var nextIdx = $scope.room.currentIndex;
+            var playlist = $scope.room.allPlaylist;
+            var playlistLength = playlist.length;
+
+            if( nextIdx == playlistLength){ //failsafe for if user is at the end of playlist
+
+                console.log("end of playlist, starting over");
+                console.log("NEXT:", $scope.syncPlaylistArray[0]);
+
+                return $scope.newVideo(playlist[0].id, 0); //play video at the beginning of array
+            }
+
+            console.log("NEXT:", $scope.syncPlaylistArray[$scope.syncIndex + 1]);
+            $scope.newVideo(playlist[nextIdx].id, nextIdx);
+
+        });
     
     
     
@@ -188,11 +243,20 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
             
     };
     
-    $scope.addYTSong = function (song) {
-        console.log("yt song", song);
+    $scope.addYTSong = function(song) {
+        
+         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default");
+        //userDB.sync.$push(song[index].id.videoId);
+        
+        console.log(song['id']['videoId']);
+        
+        //console.log(song);
+            
+        //console.log("yt song", song);
     }
     
     $scope.addSCSong = function (song) {
+        
         console.log("YT song", song);
     }
     
@@ -288,6 +352,35 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
            
       } // function closing tag
   }; // return closing tag
+   
+    
+}) //cta closing tags
+
+.directive('cta', function(){
+   return{
+       scope:{},
+       restrict:'E',
+       controller: function($scope){
+         
+    
+       },
+       link:function(scope, element, attrs){
+           
+    
+    var wordArray = ["Creative",'Web Developers','Graphic Designers','Inventors','Klever Systems'];
+           
+           var i = 0, l = wordArray.length;
+            (function iterator() {
+                scope.word = wordArray[i];  
+                 $(".newWord").html( wordArray[i]);
+                if(++i<l) {
+                setTimeout(iterator, 1750);
+                }
+            })();
+
+           
+       } // function closing tag
+   }; // return closing tag
    
     
 }); //cta closing tags

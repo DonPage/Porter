@@ -20,7 +20,7 @@ angular.module('porter')
             
             searchR = data;
             
-            console.log("serv: ",searchR);
+            //console.log("serv: ",searchR);
 
             
             

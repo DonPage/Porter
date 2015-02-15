@@ -1,4 +1,4 @@
-<h1>hello from room.html</h1>
+<h1>hello from room.html | currentIndex: {{currentPlaylistRef.$value}} | {{room.currentlyPlaying}}</h1>
 
   
 
@@ -16,12 +16,8 @@
     
     <div class="youtube" ng-switch-when="youtubeplayer">
         <h1>youtube player</h1>
-        <youtube-video player="mainPlayer" player-vars="playerVar" video-id="playingVideo.$value"></youtube-video>
-        
+        <youtube-video player="mainPlayer" player-vars="playerVar" video-id="room.currentlyPlaying"></youtube-video>
     </div>
-    
-  
-    
     
 </div>
 
