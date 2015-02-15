@@ -6,8 +6,8 @@
     
     <ul>
         <li ng-repeat="song in room.allPlaylist.default">
-            <a href="" ng-show="song.player == 'youtube'">{{song.name}} | {{song.player}}</a>
-            <a href="" ng-show="song.player == 'soundcloud'">{{song.name}} | {{song.player}}</a>
+            <a href="" ng-show="song.player == 'youtube'" ng-click="playYoutube(song.link)">{{song.name}} | {{song.player}}</a>
+            <a href="" ng-show="song.player == 'soundcloud'")>{{song.name}} | {{song.player}}</a>
 
         </li>
     </ul>
@@ -27,7 +27,7 @@
     
     <div class="youtube" ng-switch-when="youtubeplayer">
         <h1>youtube player</h1>
-        <youtube-video player="mainPlayer" player-vars="playerVar" video-id="room.currentlyPlaying"></youtube-video>
+        <youtube-video player="mainPlayer" player-vars="playerVar" video-url="room.currentlyPlaying"></youtube-video>
     </div>
     
 </div>

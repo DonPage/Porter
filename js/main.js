@@ -314,6 +314,13 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         }); 
         //console.log(song);        
     }
+    
+    
+    $scope.playYoutube = function (link) {
+        console.log("PLAY YOUTUBE!", link);
+        $scope.room.currentlyPlaying = link;
+        
+    };
 
 })
 
