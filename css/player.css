@@ -142,5 +142,8 @@ nav.fixed {
 @media screen and (max-width: 650px) {
   ul.right {
     background-color: gray; } }
+.searchResults {
+  max-width: 80%;
+  margin: 0 auto; }
 
 /*# sourceMappingURL=player.css.map */

@@ -488,6 +488,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     */
     
     $scope.playSoundcloud = function(link) {
+        
         $scope.room.currentPlayer = "soundcloud";
         console.log("PLAY SC:", link);
         $scope.room.currentlyPlaying = link;
@@ -502,6 +503,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             });
             
         };
+        
         playSCSong(link);
     }
     
