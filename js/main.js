@@ -499,19 +499,14 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
             });
             SC.stream(link, function(sound){
                 sound.play();
-                //$scope.stopSoundcloud = function(sound){sound.pause();}
-               //var play function(sound){ sound.play(); }
-               //var pause function(sound){ sound.pause(); }
             });
             
         };
         playSCSong(link);
     }
     
-
     
-    
-      $scope.stopSoundcloud = function(link) {
+      $scope.stopSoundcloud = function(link, index, $scope) {
         
             if( sound ) {
                 if(is_playing) {
@@ -522,16 +517,16 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
                 is_playing = true;
             }
          } else {
-        SC.initialize({
-                client_id: '4b634ae74afe3d56fbc6232340602934'
-            });     
-        SC.stream(link, function(obj){
-            obj.play();
-            sound = obj;
-            is_playing = true;
-        });
-            }
-        }; 
+                SC.initialize({
+                        client_id: '4b634ae74afe3d56fbc6232340602934'
+                    });     
+                SC.stream(link, function(obj){
+                    obj.play();
+                    sound = obj;
+                    is_playing = true;
+                });
+            };
+        }
 
 })
 

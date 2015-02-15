@@ -73,6 +73,10 @@
 /*  ====================================================================
     Components
     ==================================================================== */
+nav.fixed {
+  top: 0;
+  position: fixed; }
+
 .main-search {
   padding-top: 1.2em;
   width: 80%;
@@ -133,6 +137,10 @@
 
 .youtubeplayer {
   border-radius: 4px;
-  height: 100vh; }
+  height: 90vh; }
+
+@media screen and (max-width: 650px) {
+  ul.right {
+    background-color: gray; } }
 
 /*# sourceMappingURL=player.css.map */

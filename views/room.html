@@ -89,8 +89,7 @@
             <li ng-repeat="song in searchArray track by $index">
                 <img class="th" ng-src="{{song.artwork_url}}"></img>
                 <a href="" ng-click="playSoundcloud(song.stream_url)">{{song.title}}</a>
-                <a href="" ng-click="stopSoundcloud(song.stream_url)>Play/Stop</a>
-                <!--- <a href="" ng-click="stopSoundcloud(song.stream_url)">Play/Stop</a> --->
+                <a href="" ng-click="stopSoundcloud(song.stream_url)">Play/Stop</a>
                 <button id="addSCs" ng-click="addSCSong(song)" onclick="this.disabled=true;">Add song</button>
             </li>
         </ul>
