@@ -89,28 +89,34 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     record.$bindTo($scope, 'room');
     
-    var playlistData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
+    // console.log("currentPlaylist", $scope.room.currentPlaylist);
     
-    var syncPlaylist = $firebase(playlistData);
+    // record.$loaded().then(function(data){
+    //         console.log("$VALUE:", data);
+    //     });
     
-    var recordPlaylist = sync.$asArray();
     
-    sync.$update({
-        email: "random",
-        username: "random",
-        currentPlaylist: "default",
-        currentIndex: 0,
-        currentlyPlaying: "HAIDqt2aUek",
-        allPlaylist: {
-            default: {
-                link: "https://www.youtube.com/watch?v=HAIDqt2aUek",
-                link: "https://www.youtube.com/watch?v=HAIDqt2aUek"
-            }
-        }
-    })
+    
+    
+    //disabled for dev use only.
+    // sync.$update({
+    //     email: "random",
+    //     username: "random",
+    //     currentPlaylist: "default",
+    //     currentIndex: 0,
+    //     currentlyPlaying: "HAIDqt2aUek",
+    //     allPlaylist: {
+    //         default: {
+    //             link: "https://www.youtube.com/watch?v=HAIDqt2aUek",
+    //             link: "https://www.youtube.com/watch?v=HAIDqt2aUek"
+    //         }
+    //     }
+    // })
+    
     //currentIndex holds the value of index in firebase arrray.
     $scope.currentPlaylistRef = $firebase(userData.child("currentIndex")).$asObject();
     $scope.currentPlaylistRef.$loaded().then(function(data){
+        
             console.log("$scope.currentIndex:", data.$value);
             $scope.currentIndex = data.$value;
             
@@ -169,7 +175,16 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         //holds the next index value.
             var nextIdx = $scope.room.currentIndex;
             
+            var playlistData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/allPlaylist/" + $scope.room.currentPlaylist + "/");
+    
+            var syncPlaylist = $firebase(playlistData);
+    
+            var recordPlaylist = sync.$asArray();
             
+            console.log("FOREVER: ",recordPlaylist[1], nextIdx, recordPlaylist);
+            
+            
+
             
 
             // if( nextIdx == playlistLength){ //failsafe for if user is at the end of playlist
@@ -252,18 +267,29 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     $scope.addYTSong = function(song) {
         
-         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
-        userDB.push({'link' : song['id']['videoId']});
-        console.log(song['id']['videoId']);
+        var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
         
+        userDB.push({
+            'link' : 'https://www.youtube.com/watch?v=' + song['id']['videoId'],
+            'name' : song['snippet']['title'],
+            'image_medium' : song['snippet']['thumbnails']['medium']['url'],
+            'player' : 'youtube'
+        });
         //console.log(song);
-            
-        //console.log("yt song", song);
     }
     
     $scope.addSCSong = function (song) {
-        
-        console.log("YT song", song);
+
+        var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
+        /*
+        userDB.push({
+            'link' : 'https://www.youtube.com/watch?v=' + song['id']['videoId'],
+            'name' : song['snippet']['title'],
+            'image_medium' : song['snippet']['thumbnails']['medium']['url'],
+            'player' : 'soundcloud'
+        }); */
+        console.log(song);        
+
     }
     
     
@@ -373,7 +399,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
        link:function(scope, element, attrs){
            
     
-    var wordArray = ["Creative",'Web Developers','Graphic Designers','Inventors','Klever Systems'];
+    var wordArray = ["Music",'Life','Freeing','Are Melodies','Porter'];
            
            var i = 0, l = wordArray.length;
             (function iterator() {

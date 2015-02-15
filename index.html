@@ -11,12 +11,12 @@
     <script src="https://connect.soundcloud.com/sdk.js"></script>
   </head> 
   <body ng-app="porter">
-    <div class="sticky">
+  
     <nav class="top-bar" data-topbar="" role="navigation" data-options="sticky_on: large">
         <ul class="title-area">
             <!-- Title Area -->
             <li class="name">
-                <h1><a href="?ctrl=home&vivacity=home">Music Porter</a></h1>
+                <h1><a href="/home">Music Porter</a></h1>
             </li>
             <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
             <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -42,20 +42,14 @@
 
             <!-- Right Nav Section -->
             <ul class="right">
-                <li><a href="#/room">Home</a></li>
+                <li><a href="#/room">Room</a></li>
                 <li><a href="#" data-reveal-id="myModal">Register</a></li>
                 <li><a href="#/profile">Profile</a></li>
+                <li><a href="#/profile">Profile</a></li>
+                
             </ul>
         </section></nav>
 </div>
-    
-    
-    
-    <h1>testing</h1>
-    {{4+4}}
-    <a href="#/room">ROOM</a>
-    <a href="#/register">Register</a>
-
     
     <div ng-view>
       

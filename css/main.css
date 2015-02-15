@@ -2,3 +2,16 @@ body{
     background-image:url(../img/crossword.png);
     background-color:lightgray;
 }
+
+#cta-ann{
+    overflow:hidden;
+    width:100%;
+    height:500px;
+    background-image:url(../img/cta_Background.jpg);
+    background-size:cover;
+    
+}
+
+.word-carousel{
+    padding-top:30px;
+}
