@@ -1,6 +1,14 @@
-
-<div ng-controller="loginController">
-    <form ng-submit="loginUser()">
-        <button type="submit">Login</button>
-    </form>
+<div class="row">
+    <div class="large-8 medium-8 large-center medium-centered columns">
+        <div>
+            <h3>Welcome Back!</h3>
+            <hr width="75%">
+            <p>Don't worry, we saved your playlist for you! Just login with your google account below and we will take care of the rest!</p>
+        </div>
+        <div id="ctrlIDlgin"  ng-controller="loginController">
+            <form ng-submit="loginUser()">
+                <button id="lgpg" type="submit">Login to Your Account!</button>
+            </form>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,4 @@
-angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
+angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed', 'plangular'])
     .config(function ($routeProvider) {
         $routeProvider
             .when("/", {
@@ -27,7 +27,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
             })
 
             .otherwise({
-                redirectTo: "/"
+                redirectTo: "#/"
             });
     })
     
@@ -36,14 +36,60 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
 
 .controller("homeController", function($scope, $firebase, porterServ){
     
+    var ref = new Firebase("https://porter.firebaseio.com/");
     
+    $scope.logOut = function(){
+        ref.unauth();
+        window.location.hash = '#/';
+    }
 
     //Calling the awesomse Firebase! Hello Firebase, come in!
     var ref = new Firebase("https://porter.firebaseio.com/");
     //console.log(porterServ.getItems());
     if(localStorage.getItem('firebase:session::porter')){
         
-        window.location.hash = "#/";
+        window.location.hash = '#/';
+            
+        
+    }else{
+            
+            $scope.registerUser = function(){   
+    
+            //Ref Firebase var to call in facebook api
+            ref.authWithOAuthPopup("google", function(error, authData){
+                  
+                    var userRef = ref.child("/users/");
+                    $scope.id = authData.google.id;
+                    
+                    userRef.child($scope.id).update({
+                      //Information grabbing from Google
+                      name: authData.google.displayName,
+                      email: authData.google.email
+                  });
+                 var redirect = '#/';
+                 window.location.hash = redirect;
+                }
+                ,{ 
+                  scope: "email",
+                  remember: "default"
+                });
+         }; //Google Auth Closing Tag 
+         }}) // close controller "register controller"
+ 
+  /* End Register Controller */
+
+.controller("loginController", function($scope, $firebase, porterServ){
+    
+    
+        //Calling the awesomse Firebase! Hello Firebase, come in!
+    var ref = new Firebase("https://porter.firebaseio.com/");
+    
+    //$scope.logOut = function(){ref.unauth();}
+    
+    //console.log(porterServ.getItems());
+    if(localStorage.getItem('firebase:session::porter')){
+        
+        window.location.hash = '#/';
             
         
     }else{
@@ -73,21 +119,15 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
          }; //Google Auth Closing Tag 
          
         }
-        
-       } //Register COntroller bracket
-       
-    ) // close controller "register controller"
- 
-  /* End Register Controller */
-
-.controller("profileController", function($scope, $firebase){
-    console.log(localStorage.getItem("uid"));
     
     
 })
 
 .controller("roomController", function($scope, $firebase, $http, porterServ){
     //Dev room/user data
+    
+    //on init this will get user data, if any:
+    
     
     //default user account for dev purposes.
     var userAccount = "dev";
@@ -143,8 +183,7 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     { label: 'SoundCloud', value: 2 }
   ];
     
-    //if the current client is the creator of the room.
-    $scope.isOwner = false;
+    
     
     //device name, all devices must have a name before doing anything OR select an existing device.
     $scope.deviceName = false;
@@ -328,25 +367,31 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     
     $scope.playYoutube = function (link) {
+        $scope.room.currentPlayer = "youtube";
         console.log("PLAY YOUTUBE!", link);
         $scope.room.currentlyPlaying = link;
-        $scope.room.currentPlayer = "youtube";
+         
         
     };
     
     $scope.playSoundcloud = function(link) {
         $scope.room.currentPlayer = "soundcloud";
         console.log("PLAY SC:", link);
+        $scope.room.currentlyPlaying = link;
+
+        
+        function playSCSong(url) {
+            SC.initialize({
+                client_id: '4b634ae74afe3d56fbc6232340602934'
+            });
+            SC.stream(link, function(sound){
+                sound.play();
+            });
+        };
+        playSCSong(link);
     };
 
 })
-
-.controller('aboutController',function($scope){
-    
-    console.log("This is the home controller");
-
-})
-
 
 
 .directive('player', function(){

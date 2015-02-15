@@ -1,12 +1,10 @@
 <cta>
     <div id="cta-ann">
-
         <div class="row">
             <div class="large-8 medium-8 large-center medium-centered columns">
                  <h1 class="text-center word-carousel">This is <span class="newWord"></span></h1>
             </div>
-        
-            <div id="ctrlID" ng-controller="homeController">
+            <div id="ctrlID" ng-controller="homeController" ng-hide="">
                 <form ng-submit="registerUser()">
                     <button id="glgin" type="submit">Login with Google!</button>
                 </form>
