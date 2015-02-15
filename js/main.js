@@ -89,6 +89,12 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     record.$bindTo($scope, 'room');
     
+    var playlistData = new Firebase("https://porter.firebaseio.com/users/" + userAccount + "/");
+    
+    var syncPlaylist = $firebase(playlistData);
+    
+    var recordPlaylist = sync.$asArray();
+    
     sync.$update({
         email: "random",
         username: "random",
@@ -162,19 +168,20 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
         $scope.room.currentIndex ++;
         //holds the next index value.
             var nextIdx = $scope.room.currentIndex;
-            var playlist = $scope.room.allPlaylist;
-            var playlistLength = playlist.length;
+            
+            
+            
 
-            if( nextIdx == playlistLength){ //failsafe for if user is at the end of playlist
+            // if( nextIdx == playlistLength){ //failsafe for if user is at the end of playlist
 
-                console.log("end of playlist, starting over");
-                console.log("NEXT:", $scope.syncPlaylistArray[0]);
+            //     console.log("end of playlist, starting over");
+            //     console.log("NEXT:", $scope.syncPlaylistArray[0]);
 
-                return $scope.newVideo(playlist[0].id, 0); //play video at the beginning of array
-            }
+            //     return $scope.newVideo(playlist[0].id, 0); //play video at the beginning of array
+            // }
 
-            console.log("NEXT:", $scope.syncPlaylistArray[$scope.syncIndex + 1]);
-            $scope.newVideo(playlist[nextIdx].id, nextIdx);
+            // console.log("NEXT:", $scope.syncPlaylistArray[$scope.syncIndex + 1]);
+            // $scope.newVideo(playlist[nextIdx].id, nextIdx);
 
         });
     
@@ -245,9 +252,8 @@ angular.module('porter', ['ngRoute', 'firebase', 'youtube-embed'])
     
     $scope.addYTSong = function(song) {
         
-         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default");
-        //userDB.sync.$push(song[index].id.videoId);
-        
+         var userDB = new Firebase("https://porter.firebaseio.com/users/dev/allPlaylist/default/");
+        userDB.push({'link' : song['id']['videoId']});
         console.log(song['id']['videoId']);
         
         //console.log(song);
