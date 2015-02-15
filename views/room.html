@@ -69,7 +69,7 @@ The value selected is {{ correctlySelected.label }}.
             <li ng-repeat="song in searchArray track by $index">
             
                 <img ng-src="{{song.snippet.thumbnails.default.url}}"></img>
-                <span>{{song.snippet.title}}</span>
+                <a href="" ng-click="playYoutube(song.id.videoId)">{{song.snippet.title}}</a>
                 <button ng-click="addYTSong(song)">add song</button>
 
             
